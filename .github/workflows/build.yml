@@ -1,8 +1,6 @@
-name: Build APK
+name:  Build APK
 
 on:
-  push:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -22,8 +20,10 @@ jobs:
         with:
           packages: 'platforms;android-34 build-tools;34.0.0 ndk;26.1.10909125'
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+      - name: Update Gradle wrapper
+        run: |
+          chmod +x gradlew
+          sed -i 's/gradle-7.0.2-bin.zip/gradle-7.6.4-bin.zip/' gradle/wrapper/gradle-wrapper.properties
 
       - name: Build with Gradle
         run: ./gradlew assembleDebug --no-daemon
@@ -31,5 +31,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: TelegramMyClient
+          name: TelegramMyClient-Debug
           path: TMessagesProj/build/outputs/apk/debug/*.apk
